@@ -1,3 +1,66 @@
 A FIRST LOOK AT JAVASCRIPT XHR IN RAILS
 
 ENVIRONMENT: Ruby 1.9.3, Rails 3.2
+
+1. Create a new project and cd into it
+
+    rails new xhr_json_app
+    cd xhr_json_app
+
+2. Create a scaffold for products and run the migration
+
+    rails g scaffold product title:string description:text monthly:boolean
+    rake db:migrate
+
+3. Add a hyperlink and paragraph tag to the bottom of the product's index page
+
+    <p><a href="#" id="monthly">Get Product of Month</a></p>
+    <p id="tgtTag">response here</p>
+
+4. Create the Javascript for the XHR GET request for a json response.
+
+    // app/assets/javascripts/monthly.js
+    window.onload = function(){
+      var a = document.getElementById('monthly');
+      var tgtTag = document.getElementById('tgtTag');
+      a.addEventListener('click', function(e){
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'products/monthly');
+        xhr.onreadystatechange = function(){
+          if(xhr.readyState == 4 && xhr.status === 200){
+            var response = JSON.parse(xhr.responseText);
+            tgtTag.innerHTML = response.title;
+          }
+        };
+        xhr.setRequestHeader('Content-Type','application/json');
+        xhr.send(null);
+        e.preventDefault();
+      });
+    };
+
+5. Add a new action to the products controller for the product of month
+
+    # app/controllers/products_controller.rb
+    def monthly
+      @products = Product.find_by_monthly('t')
+
+      respond_to do |format|
+        format.html # index.html.erb
+        format.js {}
+        format.json { render json: @products }
+      end
+    end 
+
+6. Add a new route for products/monthly with a format of :json
+
+   # app/controllers/products_controller.rb
+   # NOTE: add the route about the generated route for products
+   match 'products/monthly' => 'products#monthly', format: :json
+
+7. Launch the Rails server, navigate to the products index page
+   (http://localhost:3000/products) and add some products with
+   at least on product marked true for "monthly".
+
+8. Click the link to get the product of the month and the paragraph
+   used as the target should show the product title.
+
