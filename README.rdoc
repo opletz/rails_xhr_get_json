@@ -1,5 +1,5 @@
 A FIRST LOOK AT JAVASCRIPT XHR IN RAILS
-
+---------------------------------------
 ENVIRONMENT: Ruby 1.9.3, Rails 3.2
 
 1. Create a new project and cd into it
@@ -12,7 +12,8 @@ ENVIRONMENT: Ruby 1.9.3, Rails 3.2
     rails g scaffold product title:string description:text monthly:boolean
     rake db:migrate
 
-3. Add a hyperlink and paragraph tag to the bottom of the product's index page
+3. Add a hyperlink and paragraph tag to the bottom of the product's index 
+   page (app/views/products/index.html.erb)
 
     <p><a href="#" id="monthly">Get Product of Month</a></p>
     <p id="tgtTag">response here</p>
